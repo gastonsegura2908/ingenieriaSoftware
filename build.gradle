@@ -1,0 +1,50 @@
+plugins {
+    id 'java'
+    id  'jacoco'
+}
+
+group = 'org.example'
+version = '1.4.0'
+String mainClassPath = 'main.Window'
+
+repositories {
+    // repositorio de donde sacar las librerias
+    mavenCentral()
+}
+
+// librerias y dependencias
+dependencies {
+    // testing
+    testImplementation platform('org.junit:junit-bom:5.9.1')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+
+    // manejo de archivos json
+    // implementation 'org.json:json:20180813'
+    implementation group: 'org.json', name: 'json', version: '20220320'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+jar {
+    // para indicar la clase main
+    manifest {
+        attributes 'Main-Class': mainClassPath
+    }
+    // para agregar dependencias al jar
+    from {
+        configurations.compileClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
+
+jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            limit {
+                minimum = 0.0   // porcentaje de cobertura minimo
+            }
+        }
+    }
+}
+
